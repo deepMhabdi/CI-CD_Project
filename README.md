@@ -1,25 +1,45 @@
-CI/CD Pipeline for Flask & Express using Jenkins
-📌 Project Overview
+# CI/CD Pipeline for Flask & Express using Jenkins
 
-This project demonstrates a complete CI/CD pipeline that automatically deploys:
+<div align="center">
 
-🐍 Flask Backend (Python)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-Jenkins-red?style=for-the-badge&logo=jenkins)
+![AWS](https://img.shields.io/badge/AWS-EC2-orange?style=for-the-badge&logo=amazon-aws)
+![Flask](https://img.shields.io/badge/Backend-Flask-green?style=for-the-badge&logo=flask)
+![Express](https://img.shields.io/badge/Frontend-Express.js-blue?style=for-the-badge&logo=express)
 
-🌐 Express Frontend (Node.js)
+</div>
 
-The pipeline is implemented using Jenkins on an AWS EC2 instance, with PM2 used as a process manager to keep applications running continuously.
+---
 
-Every push to GitHub can trigger automated deployment, ensuring faster and reliable updates.
+## 📌 Project Overview
 
-🛠️ Tech Stack Used
-Category	Tools
-Cloud	AWS EC2 (Ubuntu)
-CI/CD	Jenkins
-Backend	Flask (Python)
-Frontend	Express.js (Node.js)
-Process Manager	PM2
-Version Control	Git & GitHub
-📂 Project Structure
+This project demonstrates a complete **CI/CD pipeline** that automatically deploys:
+
+- 🐍 **Flask Backend** (Python)
+- 🌐 **Express Frontend** (Node.js)
+
+The pipeline is implemented using **Jenkins** on an **AWS EC2 instance**, with **PM2** used as a process manager to keep applications running continuously.
+
+Every push to GitHub can trigger automated deployment, ensuring **faster and reliable updates**.
+
+---
+
+## 🛠️ Tech Stack Used
+
+| Category | Tools |
+|----------|-------|
+| **Cloud** | AWS EC2 (Ubuntu) |
+| **CI/CD** | Jenkins |
+| **Backend** | Flask (Python) |
+| **Frontend** | Express.js (Node.js) |
+| **Process Manager** | PM2 |
+| **Version Control** | Git & GitHub |
+
+---
+
+## 📂 Project Structure
+
+```
 CI-CD_Project/
 │
 ├── backend/
@@ -35,90 +55,107 @@ CI-CD_Project/
 │   └── node_modules/
 │
 └── README.md
+```
 
-🎯 Objective
+---
 
-Automate deployment of Flask and Express apps
+## 🎯 Objective
 
-Use Jenkins pipelines for CI/CD
+- ✅ Automate deployment of Flask and Express apps
+- ✅ Use Jenkins pipelines for CI/CD
+- ✅ Restart applications automatically using PM2
+- ✅ Ensure apps remain live after server restarts
 
-Restart applications automatically using PM2
+---
 
-Ensure apps remain live after server restarts
+## ⚙️ Step-by-Step Implementation
 
-⚙️ Step-by-Step Implementation
-1️⃣ AWS EC2 Setup
+### 1️⃣ AWS EC2 Setup
 
-Created an Ubuntu EC2 instance
+**Created an Ubuntu EC2 instance**
 
 Opened required ports:
+- `22` (SSH)
+- `8080` (Jenkins)
+- `3000` (Express)
+- `5000` (Flask)
 
-22 (SSH)
-
-8080 (Jenkins)
-
-3000 (Express)
-
-5000 (Flask)
-
-Connected using SSH:
-
+**Connected using SSH:**
+```bash
 ssh -i key.pem ubuntu@<EC2_PUBLIC_IP>
+```
 
-2️⃣ Install Required Software
-Install Python & Node.js
+---
+
+### 2️⃣ Install Required Software
+
+#### Install Python & Node.js
+```bash
 sudo apt update
 sudo apt install -y python3 python3-venv python3-pip nodejs npm
+```
 
-Install PM2
+#### Install PM2
+```bash
 sudo npm install -g pm2
+```
 
-3️⃣ Run Applications with PM2
-Flask Backend
+---
+
+### 3️⃣ Run Applications with PM2
+
+#### Flask Backend
+```bash
 cd backend
 pm2 start app.py --name flask-app --interpreter python3
+```
 
-Express Frontend
+#### Express Frontend
+```bash
 cd frontend
 pm2 start app.js --name express-app
+```
 
-
-Verify:
-
+**Verify:**
+```bash
 pm2 list
+```
 
-4️⃣ Install & Configure Jenkins
-Install Jenkins
+---
+
+### 4️⃣ Install & Configure Jenkins
+
+#### Install Jenkins
+```bash
 sudo apt install -y openjdk-17-jdk
 sudo apt install -y jenkins
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
+```
 
-
-Access Jenkins:
-
+**Access Jenkins:**
+```
 http://<EC2_PUBLIC_IP>:8080
+```
 
-
-Unlock Jenkins:
-
+**Unlock Jenkins:**
+```bash
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
 
+**Installed required plugins:**
+- Git
+- Pipeline
+- NodeJS
+- Credentials Binding
 
-Installed required plugins:
+---
 
-Git
+### 5️⃣ Jenkinsfile for Flask Backend
 
-Pipeline
+**📄 backend/Jenkinsfile**
 
-NodeJS
-
-Credentials Binding
-
-5️⃣ Jenkinsfile for Flask Backend
-
-📄 backend/Jenkinsfile
-
+```groovy
 pipeline {
     agent any
 
@@ -160,11 +197,15 @@ pipeline {
         }
     }
 }
+```
 
-6️⃣ Jenkinsfile for Express Frontend
+---
 
-📄 frontend/Jenkinsfile
+### 6️⃣ Jenkinsfile for Express Frontend
 
+**📄 frontend/Jenkinsfile**
+
+```groovy
 pipeline {
     agent any
 
@@ -202,64 +243,120 @@ pipeline {
         }
     }
 }
+```
 
-7️⃣ Jenkins Pipeline Configuration
+---
 
-Created two Jenkins pipelines:
+### 7️⃣ Jenkins Pipeline Configuration
 
-Pipeline Name	Jenkinsfile Path
-flask-pipeline	backend/Jenkinsfile
-express-pipeline	frontend/Jenkinsfile
+**Created two Jenkins pipelines:**
 
-Pipeline type:
+| Pipeline Name | Jenkinsfile Path |
+|---------------|------------------|
+| flask-pipeline | backend/Jenkinsfile |
+| express-pipeline | frontend/Jenkinsfile |
 
-Pipeline script from SCM
+**Configuration:**
+- **Pipeline type:** Pipeline script from SCM
+- **SCM:** Git
+- **Repository URL:** `https://github.com/deepMhabdi/CI-CD_Project.git`
+- **Branch:** `main`
 
+---
 
-SCM:
+### 8️⃣ CI/CD Workflow
 
-Git
+```mermaid
+graph LR
+    A[Developer pushes code to GitHub] --> B[Jenkins pulls latest code]
+    B --> C[Dependencies are installed]
+    C --> D[Application is restarted using PM2]
+    D --> E[Deployment completes automatically]
+```
 
+1. Developer pushes code to GitHub
+2. Jenkins pulls latest code
+3. Dependencies are installed
+4. Application is restarted using PM2
+5. Deployment completes automatically
 
-Repository URL:
+---
 
-https://github.com/deepMhabdi/CI-CD_Project.git
+## 🌍 Access the Applications
 
+| Application | URL |
+|-------------|-----|
+| **Flask Backend** | `http://<EC2_PUBLIC_IP>:5000` |
+| **Express Frontend** | `http://<EC2_PUBLIC_IP>:3000` |
+| **Jenkins Dashboard** | `http://<EC2_PUBLIC_IP>:8080` |
 
-Branch:
+---
 
-main
+## ✅ Final Outcome
 
-8️⃣ CI/CD Workflow
+- ✔ Fully automated CI/CD pipeline
+- ✔ Zero-downtime deployments
+- ✔ Separate pipelines for frontend & backend
+- ✔ Production-ready DevOps workflow
 
-Developer pushes code to GitHub
+---
 
-Jenkins pulls latest code
+## 🚀 Getting Started
 
-Dependencies are installed
+### Prerequisites
+- AWS Account
+- GitHub Account
+- Basic knowledge of Jenkins, Flask, and Express.js
 
-Application is restarted using PM2
+### Clone the Repository
+```bash
+git clone https://github.com/deepMhabdi/CI-CD_Project.git
+cd CI-CD_Project
+```
 
-Deployment completes automatically
+### Local Development
 
-🌍 Access the Applications
-Application	URL
-Flask Backend	http://<EC2_PUBLIC_IP>:5000
-Express Frontend	http://<EC2_PUBLIC_IP>:3000
-Jenkins Dashboard	http://<EC2_PUBLIC_IP>:8080
-✅ Final Outcome
+#### Backend (Flask)
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
 
-✔ Fully automated CI/CD pipeline
-✔ Zero-downtime deployments
-✔ Separate pipelines for frontend & backend
-✔ Production-ready DevOps workflow
+#### Frontend (Express)
+```bash
+cd frontend
+npm install
+node app.js
+```
 
-🧑‍💻 Author
+---
 
-Deep Mhabdi
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 🧑‍💻 Author
+
+**Deep Mhabdi**  
 Frontend Developer | DevOps Enthusiast
-GitHub: https://github.com/deepMhabdi
 
-🎉 Conclusion
+[![GitHub](https://img.shields.io/badge/GitHub-deepMhabdi-181717?style=for-the-badge&logo=github)](https://github.com/deepMhabdi)
 
-This project demonstrates a real-world CI/CD implementation using Jenkins, AWS, Flask, and Express — covering deployment, automation, and process management end-to-end.
+---
+
+## 🎉 Conclusion
+
+This project demonstrates a **real-world CI/CD implementation** using Jenkins, AWS, Flask, and Express — covering deployment, automation, and process management end-to-end.
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if you found it helpful!**
+
+</div>
