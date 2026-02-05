@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                python3 -m venv venv || true
+                source venv/bin/activate
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Restart Flask App') {
+            steps {
+                sh '''
+                pm2 restart flask-app || pm2 start venv/bin/python --name flask-app -- app.py
+                '''
+            }
+        }
+    }
+}

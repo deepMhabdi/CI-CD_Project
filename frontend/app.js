@@ -13,7 +13,7 @@ const PORT = 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const BACKEND_URL = "http://localhost:5002"; // Update with your Flask backend URL
+const BACKEND_URL = "http://13.127.31.137:5002/"; // Update with your Flask backend URL
 
 // Home route
 app.get("/", (req, res) => {
